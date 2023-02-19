@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { ListItem } from "../ListItem";
 
@@ -46,9 +47,32 @@ describe('ListItem', () => {
         expect(node.children).toHaveLength(1);
     });
     
-    it('callback is called', () => {});
+    it('callback is called', () => {
+        const { getByTestId } = render(
+            <ListItem
+                id='list-item-1'
+                checkable={true}
+                onCheck={mockOnCheck}
+                item='Lorem ipsum dolor sit amet consectetur'
+            />
+        );
+        const node = getByTestId('test-list-item-1');
+        expect(mockOnCheck.mock.calls).toHaveLength(0);
+        userEvent.click(node);
+        expect(mockOnCheck.mock.calls).toHaveLength(1);
+    });
 
-    it('callback is not called when not checkable', () => {});
+    it('callback is not called when not checkable', () => {
+        const { getByTestId } = render(
+            <ListItem
+                id='list-item-1'
+                checkable={false}
+                onCheck={mockOnCheck}
+                item='Lorem ipsum dolor sit amet consectetur'
+            />
+        );
+        expect(mockOnCheck.mock.calls).toHaveLength(0);
+    });
 
     it('matches saved snapshot', () => {
         const tree = render(
